@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz Game 🎉</title>
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            text-align: center;
+            background: linear-gradient(135deg, #6e8efb, rgb(249, 118, 140));
+            color: white;
+            padding: 20px;
+            overflow: hidden;
+        }
+        #quiz-container {
+            max-width: 600px;
+            margin: auto;
+            background: rgba(255, 255, 255, 0.2);
+            padding: 20px;
+            border-radius: 15px;
+            backdrop-filter: blur(10px);
+        }
+        .choice {
+            display: block;
+            margin: 10px auto;
+            padding: 15px;
+            width: 80%;
+            background: rgba(255, 255, 255, 0.3);
+            border: none;
+            cursor: pointer;
+            font-size: 18px;
+            font-weight: bold;
+            color: rgb(4, 4, 4);
+            border-radius: 8px;
+        }
+        #result {
+            margin-top: 20px;
+            font-size: 20px;
+            font-weight: bold;
+        }
+        #timer {
+            font-size: 22px;
+            font-weight: bold;
+            color: yellow;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div id="quiz-container">
+        <h1>🔥 Ultimate Quiz Challenge 🔥</h1>
+        <h2 id="question">Loading...</h2>
+        <div id="choices"></div>
+        <p id="timer">⏳ Time left: 10s</p>
+        <p id="result"></p>
+        <button onclick="nextQuestion()">Next Question ➡️</button>
+    </div>
+
+    <script>
+        const questions = [
+            { question: "What is the capital of France?", choices: ["Berlin", "Madrid", "Paris", "Lisbon"], answer: "Paris" },
+            { question: "Which planet is known as the Red Planet?", choices: ["Earth", "Mars", "Jupiter", "Saturn"], answer: "Mars" },
+            { question: "Who wrote 'To Kill a Mockingbird'?", choices: ["Harper Lee", "J.K. Rowling", "Ernest Hemingway", "Mark Twain"], answer: "Harper Lee" },
+            { question: "What is the largest ocean on Earth?", choices: ["Atlantic Ocean", "Indian Ocean", "Arctic Ocean", "Pacific Ocean"], answer: "Pacific Ocean" },
+            { question: "What is the chemical symbol for gold?", choices: ["Au", "Ag", "Pb", "Fe"], answer: "Au" },
+            { question: "Which country is famous for the Great Wall?", choices: ["India", "China", "Japan", "Russia"], answer: "China" },
+            { question: "What is the square root of 64?", choices: ["6", "7", "8", "9"], answer: "8" },
+            { question: "Who painted the Mona Lisa?", choices: ["Vincent van Gogh", "Pablo Picasso", "Leonardo da Vinci", "Claude Monet"], answer: "Leonardo da Vinci" },
+            { question: "What is the smallest prime number?", choices: ["0", "1", "2", "3"], answer: "2" },
+            { question: "Which is the longest river in the world?", choices: ["Amazon River", "Nile River", "Yangtze River", "Mississippi River"], answer: "Nile River" }
+        ];
+        let currentQuestionIndex = 0;
+        let score = 0;
+        let timer;
+        let timeLeft = 10;
+
+        function loadQuestion() {
+            if (currentQuestionIndex >= questions.length) {
+                document.getElementById("quiz-container").innerHTML = `<h2>🎉 Game Over! 🎉</h2><p>Your final score: <b>${score}/${questions.length}</b></p>`;
+                return;
+            }
+            
+            const q = questions[currentQuestionIndex];
+            document.getElementById("question").innerText = q.question;
+            document.getElementById("result").innerText = "";
+            document.getElementById("timer").innerText = `⏳ Time left: ${timeLeft}s`;
+            
+            const choicesDiv = document.getElementById("choices");
+            choicesDiv.innerHTML = "";
+            q.choices.forEach(choice => {
+                const btn = document.createElement("button");
+                btn.innerText = choice;
+                btn.classList.add("choice");
+                btn.onclick = () => checkAnswer(choice);
+                choicesDiv.appendChild(btn);
+            });
+            
+            startTimer();
+        }
+
+        function startTimer() {
+            clearInterval(timer);
+            timeLeft = 10;
+            timer = setInterval(() => {
+                timeLeft--;
+                document.getElementById("timer").innerText = `⏳ Time left: ${timeLeft}s`;
+                if (timeLeft <= 0) {
+                    clearInterval(timer);
+                    document.getElementById("result").innerText = `⏰ Time's up! The correct answer was: ${questions[currentQuestionIndex].answer}`;
+                    setTimeout(nextQuestion, 2000);
+                }
+            }, 1000);
+        }
+
+        function checkAnswer(selected) {
+            clearInterval(timer);
+            const correct = questions[currentQuestionIndex].answer;
+            if (selected === correct) {
+                document.getElementById("result").innerText = "✅ Correct! 🎉";
+                score++;
+            } else {
+                document.getElementById("result").innerText = `❌ Wrong! The correct answer was: ${correct}`;
+            }
+            setTimeout(nextQuestion, 2000);
+        }
+
+        function nextQuestion() {
+            currentQuestionIndex++;
+            loadQuestion();
+        }
+
+        loadQuestion();
+    </script>
+</body>
+</html>
